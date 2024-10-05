@@ -4,7 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+criterion = { version = "0.5.1", features = ["async_futures", "async_std"] }
 rand = "0.8.5"
+rt = "0.11.0"
+tokio = { version = "1.40.0", features = ["macros", "rt-multi-thread"] }
 
 [dev-dependencies]
 criterion = "0.5.1"
