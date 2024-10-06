@@ -5,12 +5,12 @@ use crate::helpers;
 mod tests {
     use super::*;
 
-    #[tokio::test]
-    async fn test_aggregate_hashes_returns_correct_hash_sum() {
+    #[test]
+    fn test_aggregate_hashes_returns_correct_hash_sum() {
         let hashes = helpers::generate_random_hashes();
         let res_1 = aggregator::aggregate_hashes(&hashes);
         let res_2 = aggregator::aggregate_hashes_parts(&hashes);
-        let res_3 = aggregator::aggregate_hashes_async_parts(&hashes).await;
+        let res_3 = aggregator::aggregate_hashes_halves(&hashes);
 
         let mut expected_1 = [0u64; aggregator::HASH_LENGTH_U64];
         let mut expected_2 = [0u64; aggregator::HASH_LENGTH_U64];
@@ -21,11 +21,10 @@ mod tests {
                 { aggregator::HASH_LENGTH_U64 },
                 { aggregator::HASH_SPLIT_SIZE_U64 },
             >(&expected_2, &hashes[i]);
-            expected_3 = helpers::add_hashes_async_parts::<
+            expected_3 = helpers::add_hashes_final::<
                 { aggregator::HASH_LENGTH_U64 },
                 { aggregator::HASH_SPLIT_SIZE_U64 },
-            >(&expected_3, &hashes[i])
-            .await;
+            >(&expected_3, &hashes[i]);
         }
 
         assert_eq!(

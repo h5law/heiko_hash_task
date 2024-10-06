@@ -1,4 +1,4 @@
-use crate::helpers::{add_hashes_async_parts, add_hashes_parts};
+use crate::helpers::{add_hashes_async_parts, add_hashes_final, add_hashes_parts};
 
 pub const HASH_LENGTH_U64: usize = 64;
 pub const HASH_SPLIT_SIZE_U64: usize = 32;
@@ -24,6 +24,20 @@ where
 
     for hash in hashes {
         res = add_hashes_parts::<HASH_LENGTH_U64, HASH_SPLIT_SIZE_U64>(&mut res, hash);
+    }
+
+    return res;
+}
+
+pub fn aggregate_hashes_halves<T>(hashes: T) -> [u64; HASH_LENGTH_U64]
+where
+    T: AsRef<[[u64; HASH_LENGTH_U64]]>,
+{
+    let hashes = hashes.as_ref();
+    let mut res = [0u64; HASH_LENGTH_U64];
+
+    for hash in hashes.as_ref() {
+        res = add_hashes_final::<HASH_LENGTH_U64, HASH_SPLIT_SIZE_U64>(&mut res, hash);
     }
 
     return res;
